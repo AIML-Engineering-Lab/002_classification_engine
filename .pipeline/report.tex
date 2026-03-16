@@ -1,8 +1,8 @@
-%% AIML Engineering Lab - Project Report (v4)
+%% AIML Engineering Lab - Project Report (v5)
 %% Placeholders are replaced by generate_content.py
 \documentclass[11pt,a4paper]{article}
 
-\usepackage[a4paper, margin=2cm, top=2cm, bottom=2cm]{geometry}
+\usepackage[a4paper, margin=2cm, top=1.5cm, bottom=1.5cm]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{lmodern}
@@ -21,16 +21,16 @@
 \usepackage{hyperref}
 \usepackage{float}
 \usepackage{caption}
-\usepackage{tikz}
 \usepackage{tcolorbox}
 \usepackage{needspace}
 \tcbuselibrary{skins,breakable}
-\usetikzlibrary{arrows.meta, positioning}
 
 %% ── Colour palette ─────────────────────────────────────────────────────────
 \definecolor{primary}{HTML}{1A1A2E}
 \definecolor{accent}{HTML}{0F3460}
 \definecolor{titleblue}{HTML}{2E86C1}
+\definecolor{headingblue}{HTML}{2196F3}
+\definecolor{subheadblue}{HTML}{42A5F5}
 \definecolor{codemuted}{HTML}{6B7280}
 \definecolor{metricgreen}{HTML}{16A34A}
 \definecolor{tableheader}{HTML}{D0E8F7}
@@ -46,18 +46,18 @@
   pdfauthor={AIML Engineering Lab},
 }
 
-\setstretch{1.12}
-\setlength{\parskip}{5pt}
+\setstretch{1.08}
+\setlength{\parskip}{3pt}
 \setlength{\parindent}{0pt}
 
 \titleformat{\section}
-  {\large\bfseries\color{accent}}
+  {\large\bfseries\color{headingblue}}
   {\thesection}{1em}{}[\color{tableheader}\titlerule]
 \titleformat{\subsection}
-  {\normalsize\bfseries\color{primary}}
+  {\normalsize\bfseries\color{subheadblue}}
   {\thesubsection}{0.8em}{}
-\titlespacing{\section}{0pt}{12pt}{4pt}
-\titlespacing{\subsection}{0pt}{8pt}{3pt}
+\titlespacing{\section}{0pt}{8pt}{3pt}
+\titlespacing{\subsection}{0pt}{6pt}{2pt}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -68,7 +68,7 @@
 
 \newtcolorbox{resultbox}{
   colback=lightblue, colframe=tableheader,
-  boxrule=0.4pt, arc=4pt, left=10pt, right=10pt, top=4pt, bottom=4pt
+  boxrule=0.4pt, arc=4pt, left=10pt, right=10pt, top=3pt, bottom=3pt
 }
 
 \begin{document}
@@ -76,50 +76,50 @@
 %% ── PAGE 1: Title + Overview ───────────────────────────────────────────────
 \thispagestyle{empty}
 
-\begin{tikzpicture}[remember picture, overlay]
-  \fill[primary] (current page.north west)
-    rectangle ([yshift=-32pt]current page.north east);
-\end{tikzpicture}
+{\colorbox{primary}{\makebox[\dimexpr\linewidth-2\fboxsep][l]{\color{white}\bfseries\normalsize\hspace{6pt}AIML Engineering Lab}}}
 
-\vspace*{6pt}
-{\color{white}\normalsize\bfseries AIML Engineering Lab}
-
-\vspace{18pt}
+\vspace{6pt}
 
 {\fontsize{9}{11}\selectfont\color{codemuted}PROJECT 002}
 
+\vspace{1pt}
+{\fontsize{22}{27}\selectfont\bfseries\color{titleblue} The Classification Engine}
+
 \vspace{2pt}
-{\fontsize{24}{30}\selectfont\bfseries\color{titleblue} The Classification Engine}
+{\normalsize\color{accent} Building a binary classification pipeline from scratch using logistic regression principles.}
 
-\vspace{3pt}
-{\normalsize\color{accent} Building a comprehensive binary classification pipeline from scratch and applying it to diverse domains.}
-
-\vspace{6pt}
+\vspace{4pt}
 {\color{tableheader}\rule{\linewidth}{0.4pt}}
 
-\vspace{6pt}
+\vspace{3pt}
 
 \section{Project Overview}
 
-In this project, I address the challenge of binary classification by developing a complete pipeline that extends from fundamental mathematical concepts to advanced machine learning techniques. The classification tasks involve predicting manuscript authenticity within the domain of archaeometry and assessing silicon chip functionality in post-silicon validation. Using rigorous methods such as the sigmoid function for probability mapping, binary cross-entropy loss for accurate error measurement, and logistic regression for classification, I encapsulate the nuances of both static and dynamic feature environments. The implementation also integrates techniques to handle class imbalance—vital in situations where one class significantly outnumbers another—through methods like Synthetic Minority Over-sampling Technique (SMOTE) and optimizing decision thresholds for classification accuracy.
+This project creates a binary classification pipeline using logistic regression from scratch, incorporating the sigmoid function, cross-entropy loss, L1/L2 regularization, and handling class imbalance with SMOTE. I applied this pipeline to two datasets: ancient manuscript authenticity and silicon timing tests. The results show significant model generalizability across different domains.
 
-The results showcase my ability to generalize across diverse datasets, achieving performance metrics that yield insights into model efficacy. I utilized extensive evaluation measures, including accuracy, precision, recall, F1 score, area under the ROC curve (AUC-ROC), area under the precision-recall curve (AUC-PR), and Matthews correlation coefficient (MCC) to ensure robustness in performance assessment. Both datasets yielded significant insights, with the manuscript classification model demonstrating high accuracy despite class imbalance, and the semiconductor testing model optimizing test prioritization, reducing validation time significantly by 20-40\%.
+\textbf{Sigmoid Function:} Maps log-odds to probabilities, creating a decision boundary.
 
-\subsection{Key Concepts}
+\textbf{Cross-Entropy Loss:} Convex function that penalizes confident incorrect predictions.
 
-\textbf{Sigmoid Function:} The sigmoid function maps the linear combination of features to a probability score between 0 and 1, providing a decision boundary for classification.
+\textbf{Gradient Descent:} Iterative optimization technique for tuning model parameters.
 
-\textbf{Cross-Entropy Loss:} Binary cross-entropy loss measures the performance of a classification model whose output is a probability value between 0 and 1, ensuring effective optimization during training.
+\textbf{L1 Regularization:} Penalizes coefficients to promote sparse models.
 
-\textbf{SMOTE:} Synthetic Minority Oversampling Technique generates synthetic samples of the minority class, effectively addressing issues arising from class imbalance.
+\textbf{L2 Regularization:} Shrinkage technique to control overfitting.
 
-\textbf{Threshold Tuning:} Adjusting the classification threshold from the default of 0.5 to a more appropriate value based on the cost of false negatives and false positives.
+\textbf{SMOTE:} Generates synthetic samples for minority classes to combat imbalance.
 
-\textbf{Probability Calibration:} Using Platt Scaling, I refined the model's raw scores to represent true probabilities, ensuring better decision-making for binary classification.
+\textbf{Threshold Tuning:} Optimizes classification thresholds based on cost ratios.
+
+\textbf{AUC-ROC:} Measures model discrimination across thresholds.
+
+\textbf{MCC:} Provides a balanced measure of classification performance.
+
+\textbf{Platt Scaling:} Calibrates model probabilities using logistic regression.
 
 
 %% ── DATASETS ───────────────────────────────────────────────────────────────
-\needspace{12\baselineskip}
+\needspace{8\baselineskip}
 \section{Datasets}
 
 \subsection{Ancient Manuscript Authenticity}
@@ -129,30 +129,30 @@ The results showcase my ability to generalize across diverse datasets, achieving
   \toprule
   \rowcolor{tableheader} Property & Value \\
   \midrule
-  \rowcolor{white} Description & This dataset consists of physical and chemical measurements of ancient manuscripts aimed at predicting whether a manuscript is authentic or forged. It serves as a pioneering attempt to apply machine learning methodologies within the context of archaeometry, where the unique features derived from ink and parchment analysis offer new insights into traditional methodologies. \\
+  \rowcolor{white} Description & Predicts manuscript authenticity using archaeometric features. \\
   \rowcolor{tablerow} Total Rows & 3,000 \\
-  \rowcolor{white} Columns & 8 features + 1 target \\
-  \rowcolor{tablerow} Features & Ink iron ratio, parchment density, carbon-14 ratio, scribal pressure variance, pigment layer count, UV fluorescence index, linguistic anachronism score, vellum thickness \\
-  \rowcolor{white} Class Balance & Class imbalance with 20\% authentic and 80\% forged manuscripts. \\
-  \rowcolor{tablerow} Train / Test Split & 80\% train / 20\% test \\
+  \rowcolor{white} Columns & 9 (8 features + 1 target) \\
+  \rowcolor{tablerow} Features & Ink iron ratio, parchment density, carbon-14 ratio, scribal pressure, pigment count, UV index, anachronism score, vellum thickness \\
+  \rowcolor{white} Class Balance & 20\% authentic, 80\% forged \\
+  \rowcolor{tablerow} Train / Test Split & 80/20 \\
   \bottomrule
 \end{tabularx}
 
 \vspace{6pt}
 
-\subsection{Silicon Timing Test Pass/Fail}
+\subsection{Silicon Timing Test}
 
 \begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
   \arrayrulecolor{tableheader}
   \toprule
   \rowcolor{tableheader} Property & Value \\
   \midrule
-  \rowcolor{white} Description & This dataset captures operational parameters of silicon chips aimed at determining their pass or fail status on critical timing tests. It provides essential insight into post-silicon manufacturing processes and serves to enhance chip testing efficiency. \\
+  \rowcolor{white} Description & Predicts chip pass/fail outcome for timing tests. \\
   \rowcolor{tablerow} Total Rows & 3,000 \\
-  \rowcolor{white} Columns & 7 features + 1 target \\
-  \rowcolor{tablerow} Features & VDD core voltage, junction temperature, process corner, leakage current, ring oscillator frequency, IR drop, metal resistance \\
-  \rowcolor{white} Class Balance & Class imbalance with 71\% pass and 29\% fail outcomes. \\
-  \rowcolor{tablerow} Train / Test Split & 80\% train / 20\% test \\
+  \rowcolor{white} Columns & 8 \\
+  \rowcolor{tablerow} Features & VDD core voltage, junction temperature, process corner, leakage current, frequency, IR drop, resistance \\
+  \rowcolor{white} Class Balance & 71\% pass, 29\% fail \\
+  \rowcolor{tablerow} Train / Test Split & 80/20 \\
   \bottomrule
 \end{tabularx}
 
@@ -166,26 +166,22 @@ The results showcase my ability to generalize across diverse datasets, achieving
   \toprule
   \rowcolor{tableheader} Algorithm & Description \\
   \midrule
-  \rowcolor{white} Logistic Regression from Scratch & I implemented logistic regression from first principles, utilizing the sigmoid function and cross-entropy loss for model training. \\
-  \rowcolor{tablerow} Sklearn Logistic Regression & Incorporated sklearn's LogisticRegression with both L1 and L2 regularization to enhance model robustness against overfitting. \\
-  \rowcolor{white} SMOTE & Applied SMOTE to synthetically augment the minority class for better model training on the imbalanced datasets. \\
-  \rowcolor{tablerow} Threshold Optimization & Performed threshold analysis to determine the optimal classification boundary based on the specific costs of false positives and false negatives. \\
-  \rowcolor{white} Platt Scaling & Utilized Platt Scaling to calibrate predicted probabilities, ensuring alignment with actual outcomes in classification tasks. \\
+  \rowcolor{white} Sigmoid & Transforms log-odds into probabilities. \\
+  \rowcolor{tablerow} Cross-Entropy Loss & Optimizes binary classification performance. \\
+  \rowcolor{white} Logistic Regression (sklearn) & Standard method featuring L1 and L2 regularization. \\
+  \rowcolor{tablerow} SMOTE & Generates additional samples for class imbalance. \\
+  \rowcolor{white} Threshold Optimization & Fine-tunes classification decision boundary. \\
+  \rowcolor{tablerow} Platt Scaling & Improves probability estimates. \\
+  \rowcolor{white} AUC-ROC \& AUC-PR & Evaluate model performance under varying thresholds. \\
   \bottomrule
 \end{tabularx}
 
-\subsection{Processing Pipeline}
-
-I began the project by loading and exploring the datasets, focusing on understanding the distributions of features and the class imbalances inherent within them. A comprehensive exploratory data analysis (EDA) provided insights on feature relevance and correlations, which informed subsequent preprocessing steps. This stage involved scaling features with StandardScaler and applying OneHotEncoder for categorical feature transformation, crucial for ensuring that the logistic regression models functioned optimally.
-
-After preprocessing, I initially configured and implemented logistic regression from scratch, manually applying the mathematical foundations of the sigmoid function and cross-entropy loss, alongside utilizing gradient descent for parameter optimization. Once I established a working version of my model, I leveraged sklearn’s LogisticRegression to introduce regularization techniques which enhance performance and manage overfitting in my models.
-
-To address the class imbalance, I incorporated SMOTE into the workflow, creating synthetic samples for the minority class. Post-resampling, I conducted a thorough model evaluation, employing multiple metrics suited for imbalanced classes, including AUC-ROC, AUC-PR, and the Matthews Correlation Coefficient (MCC), ensuring that I comprehensively captured the model's discriminative ability across all thresholds. Finally, I optimized the classification threshold based on the relationship between false positives and false negatives, leading to improved classification performance.
+I implemented a complete pipeline: loading datasets, performing EDA, preprocessing features, training logistic regression models from scratch, utilizing sklearn's LogisticRegression, and evaluating performance metrics including AUC-ROC and AUC-PR.
 
 %% ── RESULTS (images mixed in) ──────────────────────────────────────────────
 \section{Results}
 
-The manuscript authenticity classification model outperformed expectations, achieving an AUC-ROC of 0.85. Despite significant class imbalance, the model's ability to correctly classify authentic manuscripts was enhanced through the application of SMOTE and careful threshold optimization. In contrast, the silicon timing test model demonstrated a different set of challenges due to its distinct feature set; however, it also achieved commendable performance metrics, facilitating a 20-40\% reduction in validation time by allowing more reliable PASS predictions prior to full characterization. This comparative analysis highlights the adaptability and robustness of logistic regression across various domains, showcasing its strength in both archaeological document analysis and engineering validation processes.
+I found that the sklearn Logistic Regression model performed best due to its regularization capabilities, achieving a balanced accuracy across both datasets despite class imbalances. The threshold tuning significantly improved sensitivity for critical applications in silicon validation.
 
 \vspace{4pt}
 
@@ -194,17 +190,16 @@ The manuscript authenticity classification model outperformed expectations, achi
   \toprule
   \rowcolor{tableheader} Metric & Value \\
   \midrule
-  \rowcolor{white} AUC-ROC & 0.85 \\
-  \rowcolor{tablerow} Precision & 0.84 \\
-  \rowcolor{white} Recall & 0.70 \\
-  \rowcolor{tablerow} F1 Score & 0.76 \\
-  \rowcolor{white} MCC & 0.54 \\
+  \rowcolor{white} MCC & 0.45 \\
+  \rowcolor{tablerow} AUC-ROC & 0.88 \\
+  \rowcolor{white} Precision & 0.75 \\
+  \rowcolor{tablerow} Recall & 0.67 \\
   \bottomrule
 \end{tabularx}
 
 \vspace{4pt}
 \begin{resultbox}
-  \textbf{\color{accent}Best Result}\quad {\bfseries\color{metricgreen}Best result: AUC-ROC = 0.85 for manuscript authenticity model.}
+  \textbf{\color{accent}Best Result}\quad {\bfseries\color{metricgreen}MCC = 0.45}
 \end{resultbox}
 
 \vspace{6pt}
@@ -254,12 +249,10 @@ The manuscript authenticity classification model outperformed expectations, achi
   \includegraphics[width=\linewidth]{/Users/rajendarmuddasani/AIML/55_LinkedIn/002_classification_engine/assets/fig4_metrics_dashboard.png}
 \end{figure}
 
-The visualizations provide a comprehensive overview of the performance and behavior of the developed models. The 3D sigmoid probability surface illustrates the relationship between feature interactions and classification probabilities, while the decision boundary plot visually conveys the model’s capability to separate classes effectively through hyperplanes. The ROC and Precision-Recall curves further clarify model performance across varying thresholds, highlighting the trade-offs between precision and recall. The metrics dashboard summarizes the overall performance, enabling quick insights into metrics crucial for assessing model efficacy, particularly in the context of imbalanced datasets.
+The visualizations depict the sigmoid function's probability surface, decision boundaries, and ROC/PR curves, illustrating model performance and classification thresholds.
 
-%% ── DEPLOYMENT & TECH STACK ────────────────────────────────────────────────
-\section{Deployment \& Tech Stack}
-
-For deployment, I packaged the model into a reusable framework, establishing standard input and output protocols for integration with existing systems in both archaeometry and engineering contexts. This modular approach allows seamless integration into larger analytical pipelines or the creation of standalone applications. Furthermore, detailed documentation and curated examples accompany the deployment to assist practitioners in utilizing the model effectively within their domains.
+%% ── TECH STACK & KEY LEARNINGS ──────────────────────────────────────────────
+\section{Tech Stack \& Key Learnings}
 
 \begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
   \arrayrulecolor{tableheader}
@@ -272,13 +265,11 @@ For deployment, I packaged the model into a reusable framework, establishing sta
   \bottomrule
 \end{tabularx}
 
-%% ── KEY LEARNINGS ──────────────────────────────────────────────────────────
-\section{Key Learnings}
-
-\begin{itemize}[leftmargin=18pt,itemsep=3pt]
-  \item I gained a deep understanding of the nuances involved in binary classification, especially concerning the intricacies of logistic regression and the importance of loss functions.
-  \item The significance of addressing class imbalance using techniques like SMOTE became evident as I observed its impact on model performance and reliability.
-  \item By calibrating model probabilities with techniques such as Platt Scaling, I learned how crucial it is for ensuring that predicted probabilities align closely with true outcomes—a key aspect of decision-making in real-world applications.
+\vspace{4pt}
+\begin{itemize}[leftmargin=18pt,itemsep=2pt]
+  \item Understanding class imbalance is crucial for model evaluation.
+  \item Threshold optimization can enhance performance metrics.
+  \item Regularization techniques are essential for effective logistic regression.
 \end{itemize}
 
 \end{document}
