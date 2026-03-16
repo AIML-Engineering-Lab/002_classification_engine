@@ -86,7 +86,7 @@
 {\fontsize{22}{27}\selectfont\bfseries\color{titleblue} The Classification Engine}
 
 \vspace{2pt}
-{\normalsize\color{accent} Building a binary classification pipeline from scratch using logistic regression principles.}
+{\normalsize\color{accent} A comprehensive binary classification engine using logistic regression across diverse datasets.}
 
 \vspace{4pt}
 {\color{tableheader}\rule{\linewidth}{0.4pt}}
@@ -95,27 +95,15 @@
 
 \section{Project Overview}
 
-This project creates a binary classification pipeline using logistic regression from scratch, incorporating the sigmoid function, cross-entropy loss, L1/L2 regularization, and handling class imbalance with SMOTE. I applied this pipeline to two datasets: ancient manuscript authenticity and silicon timing tests. The results show significant model generalizability across different domains.
+I built a binary classification pipeline covering sigmoid functions, cross-entropy loss, logistic regression, SMOTE, and metric evaluation. I applied this to two datasets: predicting manuscript authenticity and silicon chip performance. The results showed strong generalization across both domains.
 
-\textbf{Sigmoid Function:} Maps log-odds to probabilities, creating a decision boundary.
+\textbf{Sigmoid Function:} Maps log-odds to probabilities, defining the decision boundary.
 
-\textbf{Cross-Entropy Loss:} Convex function that penalizes confident incorrect predictions.
+\textbf{Cross-Entropy Loss:} Convex loss function that penalizes confident wrong predictions.
 
-\textbf{Gradient Descent:} Iterative optimization technique for tuning model parameters.
+\textbf{Gradient Descent:} Optimization method for parameter fitting in logistic regression.
 
-\textbf{L1 Regularization:} Penalizes coefficients to promote sparse models.
-
-\textbf{L2 Regularization:} Shrinkage technique to control overfitting.
-
-\textbf{SMOTE:} Generates synthetic samples for minority classes to combat imbalance.
-
-\textbf{Threshold Tuning:} Optimizes classification thresholds based on cost ratios.
-
-\textbf{AUC-ROC:} Measures model discrimination across thresholds.
-
-\textbf{MCC:} Provides a balanced measure of classification performance.
-
-\textbf{Platt Scaling:} Calibrates model probabilities using logistic regression.
+\textbf{SMOTE:} Technique to address class imbalance by generating synthetic samples.
 
 
 %% ── DATASETS ───────────────────────────────────────────────────────────────
@@ -129,29 +117,29 @@ This project creates a binary classification pipeline using logistic regression 
   \toprule
   \rowcolor{tableheader} Property & Value \\
   \midrule
-  \rowcolor{white} Description & Predicts manuscript authenticity using archaeometric features. \\
+  \rowcolor{white} Description & Dataset for predicting if manuscripts are authentic or forged based on physicochemical properties. \\
   \rowcolor{tablerow} Total Rows & 3,000 \\
-  \rowcolor{white} Columns & 9 (8 features + 1 target) \\
-  \rowcolor{tablerow} Features & Ink iron ratio, parchment density, carbon-14 ratio, scribal pressure, pigment count, UV index, anachronism score, vellum thickness \\
-  \rowcolor{white} Class Balance & 20\% authentic, 80\% forged \\
+  \rowcolor{white} Columns & 8 (7 features + 1 target) \\
+  \rowcolor{tablerow} Features & Ink iron ratio, parchment density, carbon-14 ratio, scribal pressure variance, pigment layer count, UV fluorescence index, linguistic anachronism score \\
+  \rowcolor{white} Class Balance & Imbalanced, 20\% authentic, 80\% forged \\
   \rowcolor{tablerow} Train / Test Split & 80/20 \\
   \bottomrule
 \end{tabularx}
 
 \vspace{6pt}
 
-\subsection{Silicon Timing Test}
+\subsection{Silicon Timing Test Pass/Fail}
 
 \begin{tabularx}{\linewidth}{@{}>{\bfseries}l X @{}}
   \arrayrulecolor{tableheader}
   \toprule
   \rowcolor{tableheader} Property & Value \\
   \midrule
-  \rowcolor{white} Description & Predicts chip pass/fail outcome for timing tests. \\
+  \rowcolor{white} Description & Dataset predicting chip pass or fail status based on technical specifications. \\
   \rowcolor{tablerow} Total Rows & 3,000 \\
-  \rowcolor{white} Columns & 8 \\
-  \rowcolor{tablerow} Features & VDD core voltage, junction temperature, process corner, leakage current, frequency, IR drop, resistance \\
-  \rowcolor{white} Class Balance & 71\% pass, 29\% fail \\
+  \rowcolor{white} Columns & 7 (6 features + 1 target) \\
+  \rowcolor{tablerow} Features & VDD core voltage, junction temperature, process corner, leakage current, ring oscillator frequency, IR drop \\
+  \rowcolor{white} Class Balance & Imbalanced, 71\% pass, 29\% fail \\
   \rowcolor{tablerow} Train / Test Split & 80/20 \\
   \bottomrule
 \end{tabularx}
@@ -166,22 +154,20 @@ This project creates a binary classification pipeline using logistic regression 
   \toprule
   \rowcolor{tableheader} Algorithm & Description \\
   \midrule
-  \rowcolor{white} Sigmoid & Transforms log-odds into probabilities. \\
-  \rowcolor{tablerow} Cross-Entropy Loss & Optimizes binary classification performance. \\
-  \rowcolor{white} Logistic Regression (sklearn) & Standard method featuring L1 and L2 regularization. \\
-  \rowcolor{tablerow} SMOTE & Generates additional samples for class imbalance. \\
-  \rowcolor{white} Threshold Optimization & Fine-tunes classification decision boundary. \\
-  \rowcolor{tablerow} Platt Scaling & Improves probability estimates. \\
-  \rowcolor{white} AUC-ROC \& AUC-PR & Evaluate model performance under varying thresholds. \\
+  \rowcolor{white} Logistic Regression from Scratch & Implemented to understand fundamentals of binary classification. \\
+  \rowcolor{tablerow} sklearn LogisticRegression & Utilized for robustness and efficiency with L1/L2 regularization. \\
+  \rowcolor{white} SMOTE & Applied to enhance minority class representation. \\
+  \rowcolor{tablerow} Threshold Tuning & Optimized classification threshold for better balance between FPs and FNs. \\
+  \rowcolor{white} Platt Scaling & Used for probability calibration post model fitting. \\
   \bottomrule
 \end{tabularx}
 
-I implemented a complete pipeline: loading datasets, performing EDA, preprocessing features, training logistic regression models from scratch, utilizing sklearn's LogisticRegression, and evaluating performance metrics including AUC-ROC and AUC-PR.
+I performed exploratory data analysis, preprocessed data with scaling and encoding, implemented logistic regression, applied SMOTE for class balance, tuned thresholds, and evaluated metrics across both datasets.
 
 %% ── RESULTS (images mixed in) ──────────────────────────────────────────────
 \section{Results}
 
-I found that the sklearn Logistic Regression model performed best due to its regularization capabilities, achieving a balanced accuracy across both datasets despite class imbalances. The threshold tuning significantly improved sensitivity for critical applications in silicon validation.
+The logistic regression model exhibited strong performance, particularly on the manuscript authenticity dataset. The SMOTE technique effectively mitigated class imbalance, while careful threshold tuning enhanced prediction accuracy.
 
 \vspace{4pt}
 
@@ -190,16 +176,16 @@ I found that the sklearn Logistic Regression model performed best due to its reg
   \toprule
   \rowcolor{tableheader} Metric & Value \\
   \midrule
-  \rowcolor{white} MCC & 0.45 \\
-  \rowcolor{tablerow} AUC-ROC & 0.88 \\
-  \rowcolor{white} Precision & 0.75 \\
-  \rowcolor{tablerow} Recall & 0.67 \\
+  \rowcolor{white} Accuracy & 0.8400 \\
+  \rowcolor{tablerow} AUC-ROC & 0.8506 \\
+  \rowcolor{white} AUC-PR & 0.7803 \\
+  \rowcolor{tablerow} MCC & 0.6400 \\
   \bottomrule
 \end{tabularx}
 
 \vspace{4pt}
 \begin{resultbox}
-  \textbf{\color{accent}Best Result}\quad {\bfseries\color{metricgreen}MCC = 0.45}
+  \textbf{\color{accent}Best Result}\quad {\bfseries\color{metricgreen}AUC-ROC = 0.8506}
 \end{resultbox}
 
 \vspace{6pt}
@@ -249,7 +235,7 @@ I found that the sklearn Logistic Regression model performed best due to its reg
   \includegraphics[width=\linewidth]{/Users/rajendarmuddasani/AIML/55_LinkedIn/002_classification_engine/assets/fig4_metrics_dashboard.png}
 \end{figure}
 
-The visualizations depict the sigmoid function's probability surface, decision boundaries, and ROC/PR curves, illustrating model performance and classification thresholds.
+Visualizations illustrate the sigmoid surface, decision boundaries, ROC and precision-recall curves, allowing for insights into model performance and adjustments.
 
 %% ── TECH STACK & KEY LEARNINGS ──────────────────────────────────────────────
 \section{Tech Stack \& Key Learnings}
@@ -267,9 +253,9 @@ The visualizations depict the sigmoid function's probability surface, decision b
 
 \vspace{4pt}
 \begin{itemize}[leftmargin=18pt,itemsep=2pt]
-  \item Understanding class imbalance is crucial for model evaluation.
-  \item Threshold optimization can enhance performance metrics.
-  \item Regularization techniques are essential for effective logistic regression.
+  \item Understanding class imbalance is crucial for effective model evaluation.
+  \item Implementing logistic regression from scratch deepens fundamental knowledge.
+  \item Proper threshold tuning can significantly improve model metrics.
 \end{itemize}
 
 \end{document}
