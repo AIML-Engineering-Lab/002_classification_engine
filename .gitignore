@@ -34,12 +34,6 @@ Thumbs.db
 *.swp
 *.swo
 
-# Model artifacts
-*.pkl
-*.joblib
-*.h5
-models/
-
 # Logs
 *.log
 logs/

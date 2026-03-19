@@ -1,46 +1,32 @@
-# 002 — The Classification Engine
-
-**The AI Engineering Lab** | Post 2 of the Progressive AIML Series
-
-Binary classification from first principles: Sigmoid, Cross-Entropy, Logistic Regression, Class Imbalance, and the full metrics suite — applied to two completely different domains.
+# The Classification Engine
 
 ---
 
 ## Overview
 
-This project builds the complete binary classification pipeline from scratch. Starting with the mathematical foundations (the sigmoid function and cross-entropy loss), it progresses through sklearn's LogisticRegression with L1 and L2 regularization, class imbalance handling with SMOTE, threshold optimization, and probability calibration.
+This project builds the complete binary classification pipeline from mathematical first principles. Starting with the sigmoid function and cross-entropy loss, it progresses through scikit-learn's LogisticRegression with L1 and L2 regularization, class imbalance handling with SMOTE, threshold optimization, and probability calibration via Platt scaling.
 
-The same pipeline is applied to two independent datasets, demonstrating that the algorithm generalizes across domains.
+The same pipeline is applied to two independent datasets from entirely different domains, demonstrating that the algorithm generalizes across problems.
 
 ---
 
 ## Datasets
 
-### Dataset 1: Ancient Manuscript Authenticity
+### Dataset A: Ancient Manuscript Authenticity
 
-| Property | Value |
-|:---|:---|
-| **Domain** | Archaeometry / Document Forensics |
-| **Task** | Predict whether a manuscript is authentic (1) or forged (0) |
-| **Rows** | 3,000 |
-| **Class Balance** | 20% authentic, 80% forged (imbalanced) |
-| **Features** | Ink iron ratio, parchment density, carbon-14 ratio, scribal pressure variance, pigment layer count, UV fluorescence index, linguistic anachronism score, vellum thickness |
-| **Why Novel** | Combines archaeometric measurements with ML classification in a domain never used for teaching logistic regression |
+A synthetic dataset of 3,000 manuscript specimens. The task is to classify each as authentic or forged based on 8 biochemical and physical measurements including ink iron ratio, parchment density, carbon-14 ratio, scribal pressure variance, pigment layer count, UV fluorescence index, linguistic anachronism score, and vellum thickness.
 
-### Dataset 2: Silicon Timing Test Pass/Fail
+The dataset is heavily imbalanced (20% authentic, 80% forged), requiring SMOTE oversampling and threshold tuning for meaningful minority class detection.
 
-| Property | Value |
-|:---|:---|
-| **Domain** | Post-Silicon Validation |
-| **Task** | Predict whether a chip passes (1) or fails (0) a critical timing test |
-| **Rows** | 3,000 |
-| **Class Balance** | 71% pass, 29% fail |
-| **Features** | VDD core voltage, junction temperature, process corner (slow/typical/fast), leakage current, ring oscillator frequency, IR drop, metal resistance |
-| **Engineering Value** | Enables test prioritization by predicting high-confidence PASS outcomes, reducing characterization time by 20-40% |
+### Dataset B: Silicon Timing Test Pass/Fail
+
+A synthetic dataset of 3,000 silicon characterization measurements. The task is to predict whether a chip passes or fails a critical timing test based on VDD core voltage, junction temperature, process corner, leakage current, ring oscillator frequency, IR drop, and metal resistance.
+
+This represents a real post-silicon validation use case: predicting timing pass/fail to prioritize physical testing and reduce characterization time.
 
 ---
 
-## Key Concepts Covered
+## What This Project Covers
 
 | Concept | Description |
 |:---|:---|
@@ -49,12 +35,9 @@ The same pipeline is applied to two independent datasets, demonstrating that the
 | **Gradient Descent** | Iterative parameter optimization via ∂L/∂w = (1/n)·Xᵀ·(ŷ - y) |
 | **L1 Regularization** | Lasso-like penalty; can zero out irrelevant features |
 | **L2 Regularization** | Ridge-like penalty; shrinks all coefficients; C = 1/λ in sklearn |
-| **Stratified Split** | Preserves class ratio in train/test; critical for imbalanced data |
 | **SMOTE** | Synthetic Minority Oversampling; generates interpolated minority samples |
 | **Threshold Tuning** | Default 0.5 is rarely optimal; tune based on FP/FN cost ratio |
-| **Cost-Sensitive Learning** | In silicon validation, FN (missed fail) is 10x more costly than FP |
-| **AUC-ROC** | Discrimination ability across all thresholds |
-| **AUC-PR** | More informative than ROC for imbalanced datasets |
+| **AUC-ROC / AUC-PR** | Discrimination across all thresholds; PR is more informative for imbalanced data |
 | **MCC** | Matthews Correlation Coefficient; most balanced metric for binary classification |
 | **Platt Scaling** | Probability calibration via logistic regression on raw model scores |
 
@@ -64,40 +47,65 @@ The same pipeline is applied to two independent datasets, demonstrating that the
 
 ```
 002_classification_engine/
+├── assets/                                        # All notebook-generated visualizations
+│   ├── proj1_manuscript_sigmoid_3d.png            # Manuscript: 3D sigmoid probability surface
+│   ├── proj1_manuscript_smote.png                 # Manuscript: SMOTE before/after interpolation
+│   ├── proj1_manuscript_roc_pr.png                # Manuscript: ROC and Precision-Recall curves
+│   ├── proj1_manuscript_metrics_dashboard.png     # Manuscript: confusion matrix + metrics
+│   ├── proj1_manuscript_3d_decision_surface.png   # Manuscript: 3D probability decision surface
+│   ├── proj1_manuscript_3d_f1_optimization.png    # Manuscript: F1 score optimization surface
+│   ├── proj1_manuscript_flowchart.png             # Manuscript: AI-generated pipeline flowchart
+│   ├── proj2_silicon_decision_boundary.png        # Silicon: VDD-Temperature decision boundary
+│   ├── proj2_silicon_3d_timing.png                # Silicon: 3D feature space scatter
+│   ├── proj2_silicon_multi_model_roc.png          # Silicon: multi-model ROC comparison
+│   └── proj2_silicon_flowchart.png                # Silicon: AI-generated pipeline flowchart
 ├── data/
-│   ├── manuscript_authenticity_data.csv     # 3,000-row archaeometry dataset
-│   └── silicon_timing_test_data.csv         # 3,000-row post-silicon dataset
+│   ├── manuscript_authenticity_data.csv           # 3,000 manuscript specimens (8 features + target)
+│   └── silicon_timing_test_data.csv               # 3,000 silicon samples (7 features + target)
+├── deploy/
+│   ├── Dockerfile                                 # Container image for FastAPI server
+│   ├── docker-compose.yml                         # Single-command deployment
+│   ├── nginx.conf                                 # Reverse proxy configuration
+│   └── railway.json                               # Railway.app deployment config
+├── docs/
+│   ├── Classification_Engine_Report.html          # Report source (HTML with embedded images)
+│   └── Classification_Engine_Report.pdf           # Final PDF report (both projects)
+├── models/
+│   ├── logreg_manuscript.pkl                      # Trained LogisticRegression for manuscript (Acc = 0.84)
+│   └── logreg_silicon.pkl                         # Trained LogisticRegression for silicon (Acc = 0.80)
 ├── notebooks/
-│   ├── 01_logistic_regression_manuscript.ipynb   # Full pipeline on manuscript data
-│   └── 02_logistic_regression_silicon.ipynb      # Full pipeline on silicon data
+│   ├── 01_logistic_regression_manuscript.ipynb    # Full pipeline: EDA → SMOTE → L1/L2 → Metrics
+│   └── 02_logistic_regression_silicon.ipynb       # Silicon: decision boundary → calibration → ROC
 ├── src/
-│   ├── data_generator.py                    # Reproducible synthetic data generation
-│   └── generate_visuals.py                  # Standalone publication-quality figures
-├── assets/
-│   ├── fig1_sigmoid_surface_3d.png          # 3D sigmoid probability surface
-│   ├── fig2_decision_boundary.png           # Decision boundary in VDD-Temperature space
-│   ├── fig3_roc_pr_curves.png               # ROC and Precision-Recall curves
-│   ├── fig4_metrics_dashboard.png           # Full metrics dashboard
-│   └── fig5_smote_visualization.png         # SMOTE before/after comparison
-├── PRD.md                                   # Product Requirements Document
-├── requirements.txt
+│   ├── train.py                                   # Train LogisticRegression for both datasets
+│   ├── predict.py                                 # Load model and run inference
+│   ├── api.py                                     # FastAPI serving endpoint (POST /predict)
+│   └── data_generator.py                          # Synthetic dataset generation
+├── tests/
+│   └── test_model.py                              # Model validation tests
 ├── .gitignore
-└── LICENSE
+├── LICENSE                                        # MIT License
+└── requirements.txt                               # Python dependencies
 ```
 
 ---
 
-## Tech Stack
+## Key Visualizations
 
-| Tool | Version | Purpose |
-|:---|:---|:---|
-| Python | 3.11 | Core language |
-| pandas | 2.x | Data manipulation |
-| numpy | 1.x | Numerical operations |
-| scikit-learn | 1.x | LogisticRegression, metrics, preprocessing |
-| imbalanced-learn | 0.12 | SMOTE oversampling |
-| matplotlib | 3.x | All visualizations |
-| seaborn | 0.13 | Heatmaps and statistical plots |
+### 3D Sigmoid Probability Surface
+The sigmoid function maps linear combinations to probabilities in [0, 1]. This 3D surface shows how two input features jointly determine predicted probabilities, with the decision boundary at P = 0.5.
+
+### SMOTE Oversampling
+With only 20% authentic manuscripts, the minority class is underrepresented. SMOTE generates synthetic samples by interpolating between minority-class k-nearest neighbors, rebalancing the training set.
+
+### Decision Boundary in VDD-Temperature Space
+For the silicon dataset, the linear decision boundary is visualized in the two most physically meaningful features. Higher VDD and lower temperature consistently improve timing margins.
+
+### ROC and Precision-Recall Curves
+Four model variants compared side by side. AUC-PR is more informative than AUC-ROC for the imbalanced manuscript dataset.
+
+### Confusion Matrix and Metrics Dashboard
+Raw and normalized confusion matrices with accuracy, precision, recall, F1, and MCC at the optimal threshold.
 
 ---
 
@@ -112,47 +120,38 @@ cd 002_classification_engine
 pip install -r requirements.txt
 
 # Generate datasets
-python src/data_generator.py
-
-# Generate all visualizations
-python src/generate_visuals.py
+python3 src/data_generator.py
 
 # Open notebooks
 jupyter notebook notebooks/
+
+# Train models and save artifacts (both datasets)
+python3 src/train.py
+
+# Run predictions
+python3 src/predict.py
+
+# Start API server
+uvicorn src.api:app --host 0.0.0.0 --port 8000
+
+# Run tests
+python3 tests/test_model.py
 ```
 
 ---
 
-## Visualizations
+## Tech Stack
 
-### Figure 1: 3D Sigmoid Probability Surface
-A three-dimensional surface showing how the sigmoid function maps any combination of two features to a probability between 0 and 1. The black contour line marks the decision boundary where P(class=1) = 0.5.
-
-### Figure 2: Decision Boundary in VDD-Temperature Space
-The learned linear decision boundary projected onto the two most physically meaningful features: supply voltage and junction temperature. Probability contours show model confidence across the feature space.
-
-### Figure 3: ROC and Precision-Recall Curves
-Side-by-side comparison of all four model variants. The PR curve is more informative than ROC for the imbalanced silicon timing dataset.
-
-### Figure 4: Metrics Dashboard
-Confusion matrix, all six classification metrics at the optimal threshold, and the precision-recall-F1 tradeoff curve in a single figure.
-
-### Figure 5: SMOTE Visualization
-Before-and-after comparison showing how SMOTE generates synthetic minority class samples by interpolating between existing samples in feature space.
-
----
-
-## Series Context
-
-This is Post 2 of the Progressive AIML Series by The AI Engineering Lab. The series builds from foundational ML algorithms to deep learning, reinforcement learning, generative AI, and agentic AI systems, with every concept demonstrated on both a novel general dataset and a post-silicon validation dataset.
-
-| Post | Topic |
-|:---|:---|
-| 001 | Linear Regression Engine (OLS, Ridge, Lasso, Elastic Net) |
-| **002** | **The Classification Engine (Logistic Regression, Metrics, SMOTE)** |
-| 003 | Tree-Based Learning (Decision Trees, Random Forests) |
-| 004 | The Boosting Revolution (XGBoost, CatBoost, LightGBM) |
-| 005 | Unsupervised Discovery (K-Means, DBSCAN, PCA) |
+| Tool | Version | Purpose |
+|:---|:---|:---|
+| Python | 3.11+ | Core language |
+| NumPy | 1.24+ | Linear algebra, sigmoid implementation |
+| Pandas | 2.0+ | Data manipulation |
+| scikit-learn | 1.3+ | LogisticRegression, metrics, calibration, CV |
+| imbalanced-learn | 0.11+ | SMOTE oversampling |
+| Matplotlib | 3.7+ | All visualizations including 3D |
+| Seaborn | 0.12+ | Statistical plots, heatmaps |
+| FastAPI | 0.100+ | REST API serving |
 
 ---
 
