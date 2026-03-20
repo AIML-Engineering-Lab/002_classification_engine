@@ -155,6 +155,22 @@ python3 tests/test_model.py
 
 ---
 
+## Architecture
+
+```mermaid
+graph LR
+    A[CSV Data] --> B[StandardScaler]
+    B --> C[SMOTE Oversampling]
+    C --> D[LogisticRegression L1/L2]
+    D --> E[Threshold Tuning + ROC/PR]
+    E --> F[Platt Scaling Calibration]
+    F --> G[joblib Export]
+    G --> H[FastAPI /predict]
+    D --> I[Confusion Matrix + MCC]
+```
+
+---
+
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
