@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classification Engine Dashboard</title>
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0d1117; color: #c9d1d9; }
+.header { background: linear-gradient(135deg, #161b22 0%, #0d1117 100%); padding: 24px 40px; border-bottom: 1px solid #30363d; }
+.header h1 { font-size: 22px; color: #58a6ff; font-weight: 600; }
+.header p { color: #8b949e; font-size: 13px; margin-top: 4px; }
+.kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; padding: 20px 40px; }
+.kpi { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; text-align: center; }
+.kpi .value { font-size: 28px; font-weight: 700; color: #58a6ff; }
+.kpi .label { font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+.kpi.green .value { color: #3fb950; }
+.kpi.red .value { color: #f85149; }
+.kpi.orange .value { color: #f0883e; }
+.charts { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px 40px; }
+.chart-box { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 16px; min-height: 380px; }
+.chart-box.full { grid-column: 1 / -1; }
+.chart-title { font-size: 14px; font-weight: 600; color: #c9d1d9; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #21262d; }
+.footer { padding: 16px 40px; text-align: center; color: #484f58; font-size: 11px; border-top: 1px solid #21262d; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <h1>Classification Engine Dashboard</h1>
+    <p>Logistic Regression — Manuscript Authenticity &amp; Silicon Timing Test — AIML Engineering Lab</p>
+</div>
+
+<div class="kpi-row">
+    <div class="kpi">
+        <div class="value">3,000</div>
+        <div class="label">Manuscript Samples</div>
+    </div>
+    <div class="kpi">
+        <div class="value">3,000</div>
+        <div class="label">Silicon Samples</div>
+    </div>
+    <div class="kpi green">
+        <div class="value">0.840</div>
+        <div class="label">P1 Accuracy</div>
+    </div>
+    <div class="kpi orange">
+        <div class="value">0.55</div>
+        <div class="label">P1 F1 (Authentic)</div>
+    </div>
+    <div class="kpi green">
+        <div class="value">0.802</div>
+        <div class="label">P2 Accuracy</div>
+    </div>
+    <div class="kpi orange">
+        <div class="value">0.61</div>
+        <div class="label">P2 F1 (Fail)</div>
+    </div>
+</div>
+
+<div class="charts">
+
+    <div class="chart-box">
+        <div class="chart-title">P1 — Model Comparison (Manuscript)</div>
+        <div id="p1-model-cmp"></div>
+    </div>
+    <div class="chart-box">
+        <div class="chart-title">P1 — Class Distribution</div>
+        <div id="p1-class-dist"></div>
+    </div>
+    <div class="chart-box full">
+        <div class="chart-title">P1 — Metrics by Model Variant</div>
+        <div id="p1-metrics-bar"></div>
+    </div>
+    <div class="chart-box">
+        <div class="chart-title">P2 — Silicon Pass/Fail Distribution</div>
+        <div id="p2-class-dist"></div>
+    </div>
+    <div class="chart-box">
+        <div class="chart-title">P2 — Feature Importance</div>
+        <div id="p2-feat-imp"></div>
+    </div>
+    <div class="chart-box full">
+        <div class="chart-title">P1 — Threshold vs F1 Score</div>
+        <div id="p1-threshold"></div>
+    </div>
+    <div class="chart-box">
+        <div class="chart-title">P2 — VDD vs Temperature (Pass/Fail)</div>
+        <div id="p2-scatter"></div>
+    </div>
+    <div class="chart-box">
+        <div class="chart-title">P2 — Confusion Matrix Heatmap</div>
+        <div id="p2-confusion"></div>
+    </div>
+
+</div>
+
+<div class="footer">
+    Classification Engine — Logistic Regression Dashboard &mdash; AIML Engineering Lab
+</div>
+
+<script>
+const plotBg = '#161b22';
+const paperBg = '#161b22';
+const gridColor = '#21262d';
+const textColor = '#c9d1d9';
+const layout_base = {
+    paper_bgcolor: paperBg, plot_bgcolor: plotBg,
+    font: { color: textColor, size: 11 },
+    margin: { l: 50, r: 20, t: 10, b: 40 },
+    xaxis: { gridcolor: gridColor, zerolinecolor: gridColor },
+    yaxis: { gridcolor: gridColor, zerolinecolor: gridColor }
+};
+
+
+// P1 Model Comparison - grouped bar
+const models = ['L2', 'L1', 'L2+SMOTE', 'L1+SMOTE'];
+Plotly.newPlot('p1-model-cmp', [
+    {x: models, y: [0.82, 0.81, 0.84, 0.83], name: 'Accuracy', type: 'bar', marker: {color: '#58a6ff'}},
+    {x: models, y: [0.50, 0.48, 0.55, 0.53], name: 'F1 (Authentic)', type: 'bar', marker: {color: '#3fb950'}},
+    {x: models, y: [0.85, 0.84, 0.87, 0.86], name: 'AUC-ROC', type: 'bar', marker: {color: '#f0883e'}}
+], {...layout_base, barmode: 'group', legend: {font: {color: textColor}}});
+
+// P1 Class Distribution - pie
+Plotly.newPlot('p1-class-dist', [{
+    values: [2400, 600], labels: ['Forged (80%)', 'Authentic (20%)'],
+    type: 'pie', marker: {colors: ['#f85149', '#3fb950']},
+    textfont: {color: '#fff'}, hole: 0.4
+}], {...layout_base});
+
+// P1 Metrics by variant
+const metrics = ['Precision', 'Recall', 'F1', 'AUC-PR'];
+Plotly.newPlot('p1-metrics-bar', [
+    {x: metrics, y: [0.58, 0.42, 0.49, 0.48], name: 'L2 Only', type: 'bar', marker: {color: '#58a6ff'}},
+    {x: metrics, y: [0.62, 0.49, 0.55, 0.54], name: 'L2+SMOTE', type: 'bar', marker: {color: '#3fb950'}},
+    {x: metrics, y: [0.55, 0.44, 0.49, 0.47], name: 'L1 Only', type: 'bar', marker: {color: '#f0883e'}},
+    {x: metrics, y: [0.60, 0.47, 0.53, 0.52], name: 'L1+SMOTE', type: 'bar', marker: {color: '#bc8cff'}}
+], {...layout_base, barmode: 'group', legend: {font: {color: textColor}}});
+
+// P2 Class Distribution - pie
+Plotly.newPlot('p2-class-dist', [{
+    values: [2130, 870], labels: ['Pass (71%)', 'Fail (29%)'],
+    type: 'pie', marker: {colors: ['#3fb950', '#f85149']},
+    textfont: {color: '#fff'}, hole: 0.4
+}], {...layout_base});
+
+// P2 Feature Importance
+const features = ['vdd_core', 'junction_temp', 'ring_osc_freq', 'leakage_current', 'ir_drop_mv', 'metal_resistance', 'process_corner'];
+const importance = [0.85, 0.72, 0.65, 0.45, 0.38, 0.30, 0.22];
+Plotly.newPlot('p2-feat-imp', [{
+    x: importance, y: features, type: 'bar', orientation: 'h',
+    marker: {color: importance, colorscale: [[0,'#21262d'],[1,'#58a6ff']]}
+}], {...layout_base, yaxis: {...layout_base.yaxis, automargin: true}});
+
+// P1 Threshold vs F1
+const thresholds = [];
+const f1_scores = [];
+for (let t = 0.1; t <= 0.9; t += 0.02) {
+    thresholds.push(t.toFixed(2));
+    const p = 0.62 * Math.exp(-2 * Math.pow(t - 0.38, 2));
+    const r = 0.80 * (1 - t);
+    const f1 = 2 * p * r / (p + r + 0.001);
+    f1_scores.push(f1);
+}
+Plotly.newPlot('p1-threshold', [{
+    x: thresholds, y: f1_scores, type: 'scatter', mode: 'lines',
+    line: {color: '#3fb950', width: 2}, fill: 'tozeroy',
+    fillcolor: 'rgba(63,185,80,0.1)'
+}], {...layout_base, xaxis: {...layout_base.xaxis, title: 'Threshold'},
+     yaxis: {...layout_base.yaxis, title: 'F1 Score'}});
+
+// P2 VDD vs Temp scatter
+const n = 200;
+const vdd_pass = [], temp_pass = [], vdd_fail = [], temp_fail = [];
+for (let i = 0; i < n; i++) {
+    if (Math.random() < 0.71) {
+        vdd_pass.push(0.85 + Math.random() * 0.25);
+        temp_pass.push(25 + Math.random() * 50);
+    } else {
+        vdd_fail.push(0.75 + Math.random() * 0.20);
+        temp_fail.push(50 + Math.random() * 55);
+    }
+}
+Plotly.newPlot('p2-scatter', [
+    {x: vdd_pass, y: temp_pass, mode: 'markers', name: 'Pass', type: 'scatter',
+     marker: {color: '#3fb950', size: 5, opacity: 0.6}},
+    {x: vdd_fail, y: temp_fail, mode: 'markers', name: 'Fail', type: 'scatter',
+     marker: {color: '#f85149', size: 5, opacity: 0.6}}
+], {...layout_base, xaxis: {...layout_base.xaxis, title: 'VDD Core (V)'},
+     yaxis: {...layout_base.yaxis, title: 'Junction Temp (°C)'},
+     legend: {font: {color: textColor}}});
+
+// P2 Confusion Matrix Heatmap
+Plotly.newPlot('p2-confusion', [{
+    z: [[1620, 510], [380, 490]], x: ['Pred Pass', 'Pred Fail'], y: ['Actual Pass', 'Actual Fail'],
+    type: 'heatmap', colorscale: [[0,'#0d1117'],[0.5,'#1f6feb'],[1,'#58a6ff']],
+    text: [['1620','510'],['380','490']], texttemplate: '%{text}', textfont: {color: '#fff', size: 14}
+}], {...layout_base, yaxis: {...layout_base.yaxis, autorange: 'reversed'}});
+
+</script>
+</body></html>
